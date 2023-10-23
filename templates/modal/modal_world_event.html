@@ -1,0 +1,77 @@
+
+    <div id="detail_text">
+        {% if event_text is not none %}
+            {{event_text|safe}}
+        {%endif%}
+    </div>
+
+    {% if event_hyperlink is not none %}
+    <div id="event_hyperlink">
+      <a href="{{event_hyperlink}}" target="{{event_hyperlink}}" window="{{event_hyperlink}}">
+        <img src="{{image_path}}" id="img1">
+      </a>
+
+      {% if flip_animation == true %}
+      <script>
+
+        const img = document.getElementById('img1')
+
+        setTimeout(() => {
+          img.src ="./static/images/lede_still.jpg?fido=dido"
+        }, 6000);
+
+      </script>
+      {%endif%}
+
+    </div>
+  {%endif%}
+
+    {% if chart_json is not none %}
+  
+      <div id="world_event_rendering_chart"></div>
+      </div>
+      <!-- Placeholder for the tooltip -->
+      <div id="vis-tooltip" class="vg-tooltip on_top_always"></div>
+      </div>
+      <!-- Render Charts -->
+      <script type="text/javascript">
+
+      function parse(url, div) {
+      var opt = { mode: "vega-lite",
+          renderer: "svg",
+          actions: { export: true, source: false, editor: false }
+          };
+      vegaEmbed("#" + div, url, opt, function (error, result) {
+        vegaTooltip.vegaLite(result.view, url);
+        });
+        }
+      //Parse your Json variable here
+      parse({{ chart_json | safe }} , "world_event_rendering_chart");
+
+      </script>
+
+  {% endif %}
+
+<script>
+
+var slider_running = true;
+
+function animate_slider()
+{
+   
+    var val;
+
+    val = $('#slider').val();
+    
+    alert(document.querySelector("#world_event_rendering_chart > div > form > div > label > input[type=range]"));
+    
+
+}
+
+  $(document).ready(function () {
+    
+    page_not_loading();
+
+});
+</script>
+

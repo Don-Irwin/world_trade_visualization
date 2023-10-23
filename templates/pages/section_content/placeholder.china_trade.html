@@ -1,0 +1,43 @@
+
+
+<h1 id="china_trade_title">China Trade</h1>
+ 
+
+
+<div id="china_render_section"></div>
+
+
+<script>
+
+
+
+
+
+function back_to_list()
+{
+
+}
+
+function render_china_graphs(event_name,china_slide_no){
+
+          $.ajax({
+              url: '/render_china_graphs',
+              type: 'post',
+              data: {event_name: event_name, china_slide_no: china_slide_no},
+              success: function(data){ 
+                  $('#china_render_section').html(data); 
+                  $('#china_render_section').append(data.htmlresponse);
+              }
+          });
+        };
+
+
+$(document).ready(function () {
+    
+    page_loading();
+    render_china_graphs("china_trade","1");
+
+});
+
+</script>
+

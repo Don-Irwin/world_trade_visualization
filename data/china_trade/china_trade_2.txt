@@ -1,0 +1,12 @@
+<font size="+2"><b>Exploring The Reliance of Economy Growth on Trade Volumes and GDP Correlation with China</b></font>
+<br/>
+<br/>
+<font size="+1"><p class="text-primary"><b>Clicking a country on the Trade Reliance on China bar chart</b></p></font>
+(1) The time series shows how much an economy growth depends on trades.
+For most of the countries, their GDP growth trends are highly correlated with their international trade trends. 
+Indonesia, India and Netherlands are the exceptions. Their trade values as proportion of GDP are less correlated with the GDP growth rates.
+Australia and Iran trade trends lag a year or two behind their GDP growth rates.
+<br/>
+<br/>
+(2) A correlation coefficient on the right side shows the correlation of GDP growth between the country and China.
+Brazil's and Canada's GDP growth rates have the highest correlation of over 70% with China, while Iran and U.S. have the lowest correlation of less than 40%. 

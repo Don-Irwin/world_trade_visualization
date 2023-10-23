@@ -1,0 +1,265 @@
+
+<style>
+    body.modal-open {
+    overflow: visible;
+}
+.back-button {
+    margin-left: calc(5px + (-1 * (39px - 1.5em)) / 2);
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: #bde4fc;
+}
+</style>
+
+<h1 id="event_title">World Events</h1>
+
+World events inpact trade.  Below are stories of of four major world events which have impacted trade. <b>Click on the rows below to explore the details.</b>
+<br/>
+<br/>
+
+<div class="container">
+
+    <table class="table">
+        <tr >
+            <td id="world_event_table" >
+                <span class="align-middle">
+                    <br/><br/><br/>
+
+                    <table class="table table-responsive-md table-striped table-hover ">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Year Begin</th>
+                            <th scope="col">Year End</th>
+                            <th scope="col">Event Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for index,event in world_events.iterrows() %}
+                            
+                            <tr class="pointer" onclick="show_event_details('{{ event['event_name']|replace('-','')|replace(' ','') }}',
+                            '{{event['event_description']}}',
+                             '{{ event["year_begin"] }}',
+                             '{{event["year_end"] | replace('.0','')}}',
+                             '{{event["event_name"]}}',
+                             '{{event["information_url"]}}',
+                             '{{event["number_of_images"]}}')">
+                                <td>{{ event["event_name"] }}</td>
+                                <td>{{ event["year_begin"] }}</td>
+                                <td>{% if event["year_end"] == "" %}
+                                        Present
+                                    {% else %}
+                                        {{ event["year_end"] | replace(".0","") }} 
+                                    {% endif %}</td>
+                                <td>{{ event["event_description"][:50] }}</td>
+                            </tr>
+                            <div class="modal fade" id="{{ event['event_name']|replace('-','')|replace(' ','') }}" >
+                                <div class="modal-dialog modal-sm" >
+                                    <div class="modal-content modal-sm">
+                                        <div class="modal-header modal-sm">
+                                            <button type="button" class="close" data-dismiss="modal">×</button>
+                                            <h4 class="modal-title">{{event['event_name']}} Details </h4>
+                                        
+                                        </div>
+                                        <div class="modal-body modal-sm">
+                                            {{event['event_description']}}
+                                            <br/><br/>
+                                            <button type="button" class="btn btn-success"onclick="show_event_details('{{ event['event_name']|replace('-','')|replace(' ','') }}',
+                                            '{{event['event_description']}}',
+                                             '{{ event["year_begin"] }}',
+                                             '{{event["year_end"]}}',
+                                             '{{event["event_name"]}}',
+                                             '{{event["information_url"]}}')">Visualize</button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>    
+                            
+                            <input type="hidden" id="{{ event['event_name']|replace('-','')|replace(' ','') }}_text" style="display:none;" value="{{event['event_description']}}" >
+                                
+                        </input>
+
+                            {% endfor %}        
+                            
+                        </tbody>
+                    </table>
+
+                </span>
+        
+
+            </td>
+            <td>
+
+                <div id="world_detail_render_area">
+                    <img src="./static/images/world_event_images.jpeg" border="0" id="world_placeholder_image"/>
+
+                    <div class="container-fluid" id="event_detail_rendering" style="display:none">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" onclick="back_to_list()" id="move_back"/>
+                            </div>
+                            <div class="col-md-8 text-center"><a onclick="back_to_events()">Back to Events</a></div>
+                            <div class="col-md-2 float-right">
+                                <img src="./static/images/back-button-svgrepo-com.svg" width="40" height="40" style="transform:rotate(180deg)" class="float-end" id="move_forward" onclick="move_forward()"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12"><br/></div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-3">
+                            <div id="event_detail_text"></div>
+                          </div>
+                          <div class="col-md-9">
+                            <div id="event_render_container"></div>
+                          </div>
+                        </div>
+                      </div>                    
+
+                    </div>
+                </div>
+
+
+            </td>
+        </tr>
+    </table>
+
+
+
+  </div>
+
+
+<script>
+
+var slide_no = 1;
+var current_event_name="";
+var total_slides = 0;
+
+function show_event_modal(event_name)
+{
+    modal_id = "#"+event_name;
+    $(modal_id).modal('show'); 
+}
+
+function show_event_details(event_name,event_text,year_begin,year_end,event_title,information_url,number_of_slides)
+{
+
+    nav_to_section('world_events');
+    total_slides = number_of_slides;
+
+    if(year_end=='')
+    {
+        year_end="Present"
+    }
+
+    //alert(information_url)
+
+    hyperlink = "<a href='"+ information_url+"' target='"+information_url+"' window='"+information_url+"'><img src='./static/images/book-svgrepo-com.svg' /></a>"
+
+    title = event_title + " " + year_begin + " - " + year_end + " " + hyperlink
+
+    page_loading();
+    modal_id = "#"+event_name;
+    $(modal_id).modal('hide');
+    modal_id = "#world_event_table";
+    $(modal_id).hide(); 
+    modal_id = "#world_placeholder_image";
+    $(modal_id).hide(); 
+    $("#event_detail_rendering").show();
+
+    target_event_text_id="#event_detail_text";
+    document.getElementById('event_detail_text').innerHTML = event_text;
+    document.getElementById('event_title').innerHTML += ": " + title;
+    document.getElementById("event_render_container").innerHTML = "";
+
+    
+    if((number_of_slides>1))
+    {
+        $("#move_forward").show();
+    }
+    else
+    {
+        $("#move_forward").hide();
+    }
+
+    current_event_name = event_name;
+
+    render_world_event_graphs(event_name,slide_no);
+
+}
+
+function move_forward()
+{
+    nav_to_section('world_events');
+    slide_no +=1;
+    page_loading();
+    render_world_event_graphs(current_event_name,slide_no);
+    if(!(slide_no<total_slides))
+    {
+        $("#move_forward").hide();
+    }
+    else{
+        $("#move_forward").show();
+    }
+
+}
+
+function back_to_events()
+{
+    nav_to_section('world_events');
+    slide_no = 1;
+    back_to_list();
+}
+
+function back_to_list()
+{
+    nav_to_section('world_events');
+    if(slide_no==1)
+    {
+    $("#event_detail_rendering").hide();
+    modal_id = "#world_event_table";
+    $(modal_id).show(); 
+    modal_id = "#world_placeholder_image";
+    $(modal_id).show(); 
+    document.getElementById('event_title').innerHTML = "World Events";
+    }
+    else
+    {
+        slide_no-=1;
+        page_loading();
+        render_world_event_graphs(current_event_name,slide_no);
+
+        if(!(slide_no<total_slides))
+        {
+            $("#move_forward").hide();
+        }
+        else{
+            $("#move_forward").show();
+        }
+    }
+
+}
+
+function render_world_event_graphs(event_name,slide_no){
+
+          $.ajax({
+              url: '/render_world_event_graphs',
+              type: 'post',
+              data: {event_name: event_name, slide_no: slide_no},
+              success: function(data){ 
+                  $('#event_render_container').html(data); 
+                  $('#event_render_container').append(data.htmlresponse);
+              }
+          });
+        };
+
+
+</script>
+

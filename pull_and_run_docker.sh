@@ -11,6 +11,34 @@ docker stop ${APP_NAME}
 echo "docker rm ${APP_NAME}"
 docker rm ${APP_NAME}
 
+#*****************
+#Kill all processes running ports.
+#*****************
+
+#array of ports used by fastapi or dasboard
+server_ports_used=("8888")
+server_ports_used+=("5001")
+
+
+    #If yess, kill all the processes running fastapi / guinicorn
+    for m_port in "${server_ports_used[@]}"
+    do
+
+        pid_to_kill=$(lsof -t -i :$m_port -s TCP:LISTEN)
+
+        echo "pid_to_kill=$pid_to_kill"
+
+        #Check if the variable is defined and if it has values
+        #and if it has values in it.
+        if [[ $pid_to_kill && ${pid_to_kill-_} ]]; then
+        for ptk in "${pid_to_kill[@]}" ; do
+            sudo kill -9 ${ptk}
+        done
+        fi
+
+    done
+
+
 
 docker pull donirwinberkeley/w209_proj_don_irwin:x86_latest
 docker run --name w209_proj_don_irwin -p  8888:8888 -p 5001:5000  donirwinberkeley/w209_proj_don_irwin:x86_latest > /dev/null &

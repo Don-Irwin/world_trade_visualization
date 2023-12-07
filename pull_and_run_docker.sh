@@ -30,6 +30,8 @@ while ! $finished; do
     fi
 done
 
+google-chrome "http://127.0.0.1:5001" &
+
 echo "***********************************"
 echo "*                                 *"
 echo "* Access Flask at the following   *"
@@ -51,6 +53,8 @@ while ! $finished; do
         finished=false
     fi
 done
+
+google-chrome "http://127.0.0.1:8888/tree?" &
 
 echo "***********************************"
 echo "*                                 *"
